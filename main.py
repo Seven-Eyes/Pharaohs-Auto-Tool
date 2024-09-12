@@ -2,7 +2,10 @@ import os
 import subprocess
 import sys
 import time
+import shutil
+import zipfile
 import importlib, asyncio, webbrowser, re, json, threading
+
 try:
     from colorama import init, Fore, Style
 except:
@@ -78,7 +81,8 @@ def main():
         for package in not_installed:
             install_package(package)
     else:
-        print_colored("{r}[{ww}•{r}] All packages are already installed!", Fore.GREEN, Style.BRIGHT)
+        print_colored(f"{r}[{ww}•{r}] {g}All packages are already installed!", Fore.GREEN, Style.BRIGHT)
+        sleep(3)
 main()
 
 def start_interface():
@@ -122,13 +126,17 @@ def main_page():
             
         elif cmd == '2':
             if not os.path.exists("session.session"):
-                
+                print('\033[31m[×] \033[37mThere are no registered accounts\033[37m')
+                continue
             threading.Thread(target=run_css).start()
             print_colored(f"{r}[{ww}•{r}] {g}Successfully start collecting points {g}✓", Fore.RED, Style.BRIGHT)
             
         elif cmd == '3':
-        	stop()
-        	print_colored(f"{r}[{ww}•{r}] {g}Successfully stop collecting points {g}✓", Fore.RED, Style.BRIGHT)
+        	x = stop()
+        	if x:
+        	    print_colored(f"{r}[{ww}•{r}] {g}Successfully stop collecting points {g}✓", Fore.RED, Style.BRIGHT)
+        	else:
+        	    print_colored(f"{r}[{ww}•{r}] Collecting is already stopped {r}x", Fore.RED, Style.BRIGHT)
         	
         elif cmd == '4':
         	set_sleep()
@@ -228,8 +236,11 @@ except:
 db = uu('dbs/elhakem.ss', 'rshq')
 
 def stop():
-    db.set("collect", False)
-    
+    if db.get("collect") == True or None:
+        db.set("collect", False)
+        return True
+    else:
+        return False
 def set_sleep():
     while True:
         cmd = input(f'''{r}[{ww}•{r}] {b}Enter the number of sleeps in seconds: \033[37m''')
@@ -321,17 +332,18 @@ def run_css():
     loop.run_forever() 
     
 async def css():
+    db.set("collect", True)
     api_id = "22256614"
     api_hash = "4f9f53e287de541cf0ed81e12a68fa3b"
-    sleep = db.get("sleep") if db.exists("sleep") else 3
+    slp = db.get("sleep") if db.exists("sleep") else 3
     async with TelegramClient('session', api_id, api_hash) as client:
         channel_username = '@JJ3BOT'
         channel_entity = await client.get_entity(channel_username)
         
         while True:
-            sleep = db.get("sleep") if db.exists("sleep") else 3
+            slp = db.get("sleep") if db.exists("sleep") else 3
             await client.send_message(channel_username, '/start')
-            sleep(sleep)
+            sleep(slp)
             message = await client.get_messages(channel_username, limit=1)
             
             if "يجب عليك الاشتراك بقناة البوت" in message[0].message:
@@ -341,18 +353,18 @@ async def css():
             else:
                 break
 
-        sleep(sleep)
+        sleep(slp)
         await message[0].click(2)
-        sleep(sleep)
+        sleep(slp)
         next_message = await client.get_messages(channel_username, limit=1)
         await next_message[0].click(2)
-        sleep(sleep)
+        sleep(slp)
 
         while True:
             if db.get("collect") == False:
                 break
-            sleep = db.get("sleep") if db.exists("sleep") else 3
-            sleep(sleep)
+            slp = db.get("sleep") if db.exists("sleep") else 3
+            sleep(slp)
             history = await client(GetHistoryRequest(peer=channel_entity, limit=1, offset_date=None, offset_id=0, max_id=0, min_id=0, add_offset=0,hash=0
             ))
             latest_message = history.messages[0]
@@ -376,6 +388,91 @@ async def css():
 
 def check_updates():
     check_update(3, "Checking for updates, please wait ...")
+    current = get_current_version()
+    new = get_version_from_changelog()
+    shutil.rmtree("temp_update")
+    if current == new:
+        print(f'{r}[{g}✓{r}] \033[37mYou are already using the latest version of the tool.')
+    else:
+        print(f'{r}[{g}!!{r}] {ww}New version found {g}{new} from the tool ')
+        while True:
+            cmd = input(f'{b}[{r}?{b}] {ww}Do you want to update the tool to the latest version? y/N\n')
+            if cmd == "y" or cmd == "Y":
+                check_update(4, "The update is installing, please wait ...")
+                sta()
+                print(f'{b}[{r}×{b}] {r}The update has been completed, please restart the tool.')
+                exit()
+            elif cmd == "n" or cmd == "N":
+                print(f'{b}[{r}×{b}] {r}The update has been cancelled. ')
+                break
+            elif cmd == "":
+                continue
+                
+def download_latest_version(repo_url, temp_dir="temp_update"):
+    if not os.path.exists(temp_dir):
+        os.makedirs(temp_dir)
+    
+    zip_url = f"{repo_url}/archive/refs/heads/main.zip"
+    zip_path = os.path.join(temp_dir, "latest_version.zip")
+
+    response = requests.get(zip_url)
+    if response.status_code == 200:
+        with open(zip_path, "wb") as f:
+            f.write(response.content)
+    else:
+        return False
+
+    with zipfile.ZipFile(zip_path, 'r') as zip_ref:
+        zip_ref.extractall(temp_dir)
+
+    return temp_dir
+
+def update_files(new_version_dir, excluded_files=["dbs", "session.session"]):
+    for root, dirs, files in os.walk(new_version_dir):
+        rel_path = os.path.relpath(root, new_version_dir)
+        target_dir = os.path.join(os.getcwd(), rel_path)
+        
+        if not os.path.exists(target_dir):
+            os.makedirs(target_dir)
+
+        for file in files:
+            if file not in excluded_files:
+                src_file = os.path.join(root, file)
+                dest_file = os.path.join(target_dir, file)
+                shutil.copy(src_file, dest_file)
+
+        dirs[:] = [d for d in dirs if d not in excluded_files]
+
+def restart_tool():
+    print("Restarting the tool...")
+    os.execv(sys.executable, ['python'] + sys.argv)
+
+def sta():
+    repo_url = "https://github.com/Seven-Eyes/Pharaohs-Auto-Tool"
+    new_version_dir = download_latest_version(repo_url)
+    if not new_version_dir:
+        return
+    update_files(os.path.join(new_version_dir, "Pharaohs-Auto-Tool-main"))
+    shutil.rmtree(new_version_dir)
+    
+def get_current_version():
+    return "1.0.0"
+    
+def get_version_from_changelog():
+    repo_url = "https://github.com/Seven-Eyes/Pharaohs-Auto-Tool"
+    new_version_dir = download_latest_version(repo_url)
+    if not new_version_dir:
+        return
+    changelog_path = os.path.join(os.path.join(new_version_dir, "Pharaohs-Auto-Tool-main"), "CHANGELOG.md")
+    if os.path.exists(changelog_path):
+        with open(changelog_path, "r", encoding="utf-8") as f:
+            lines = f.readlines()
+            for line in lines:
+                if line.startswith("## [") and "] - " in line:
+                    match = re.search(r"## (.*?) -", line.replace("[", "").replace("]", ""))
+                    version = match.group(1)
+                    return version 
+    return None
     
 if __name__ == "__main__":
     try:
