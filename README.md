@@ -1,4 +1,3 @@
-Here's everything in Markdown format for your README.md file:
 
 # Pharaohs - Auto Points Collection Tool
 
