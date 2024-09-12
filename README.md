@@ -1,7 +1,7 @@
 # Pharaohs - Auto Points Collection Tool
 
 Welcome to **Pharaohs Tool**!  
-This tool is designed to automatically collect points from the **Pharaohs Bot** without any manual input.  
+This tool is designed to automatically collect points from the **Pharaohs Telegram Bot** without any manual input.  
 If you're looking for a fast and easy way to gather points automatically, this tool is here to help.
 
 ## How It Works
@@ -25,7 +25,7 @@ We recommend using it on a separate or alternative account to avoid any issues. 
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/Seven-Eyes/Pharaohs-Auto-Tool
+   git clone https://github.com/your-repository-url.git && cd Pharaohs-Auto-Tool
    ```
 2. Install the required dependencies:
    ```bash
