@@ -25,7 +25,7 @@ We recommend using it on a separate or alternative account to avoid any issues. 
 
 1. Clone this repository:
    ```bash
-   git clone https://github.com/your-repository-url.git
+   git clone https://github.com/Seven-Eyes/Pharaohs-Auto-Tool
    ```
 2. Install the required dependencies:
    ```bash
