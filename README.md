@@ -1,7 +1,7 @@
 # Pharaohs - Auto Points Collection Tool
 
 Welcome to **Pharaohs Tool**!  
-This tool is designed to automatically collect points from the **Pharaohs Telegram Bot** without any manual input.  
+This tool is designed to automatically collect points from the **Pharaohs Bot** without any manual input.  
 If you're looking for a fast and easy way to gather points automatically, this tool is here to help.
 
 ## How It Works
