@@ -1,4 +1,3 @@
-
 # Pharaohs - Auto Points Collection Tool
 
 Welcome to **Pharaohs Tool**!  
@@ -50,11 +49,11 @@ We recommend using it on a separate or alternative account to avoid any issues. 
 
 ## Important Links
 
-(Pharaohs Bot)[https://t.me/JJ3BOT]
+[Pharaohs Bot](https://t.me/JJ3BOT)
 
-(Pharaohs Channel)[https://t.me/VBEBV]
+[Pharaohs Channel](https://t.me/VBEBV)
 
-(Developer)[https://t.me/RReRe]
+[Developer](https://t.me/RReRe)
 
 
 ## Contribution
