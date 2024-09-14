@@ -1,5 +1,4 @@
 telethon
 kvsqlite
-webbrowser
 colorama
 requests
