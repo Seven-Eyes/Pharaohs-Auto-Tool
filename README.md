@@ -51,7 +51,7 @@ We recommend using it on a separate or alternative account to avoid any issues. 
 
 [Pharaohs Bot](https://t.me/JJ3BOT)
 
-[Pharaohs Channel](https://t.me/VBEBV)
+[Pharaohs Channel](https://t.me/VPEPV)
 
 [Developer](https://t.me/RReRe)
 
