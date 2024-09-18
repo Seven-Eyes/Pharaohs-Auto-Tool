@@ -29,11 +29,11 @@ We recommend using it on a separate or alternative account to avoid any issues. 
    ```
 2. Install the required dependencies:
    ```bash
-   pip install -r requirements.txt
+   python3.9 -m pip install -r requirements.txt
    ```
 3. Run the tool:
    ```bash
-   python3 main.py
+   python3.9 main.py
    ```
 
 

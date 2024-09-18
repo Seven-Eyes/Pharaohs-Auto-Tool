@@ -2,3 +2,4 @@ telethon
 kvsqlite
 colorama
 requests
+bs4
